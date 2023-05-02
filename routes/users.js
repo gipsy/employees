@@ -1,6 +1,7 @@
 // const express = require('express');
 import express from 'express';
 import { login, register, current } from '../controllers/login.js'
+import auth from '../middleware/auth.js'
 
 const router = express.Router();
 
@@ -11,6 +12,6 @@ router.post('/login', login);
 router.post('/register', register);
 
 // /api/user/current
-router.get('/current', current);
+router.get('/current', auth, current);
 
 export default router;
