@@ -1,7 +1,9 @@
-import React from 'react'
+import { Layout } from '../../components/layout'
 
 export const Login = () => {
   return (
-    <div>Login</div>
+    <Layout>
+      <div>Login</div>
+    </Layout>
   )
 }
