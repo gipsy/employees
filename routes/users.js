@@ -1,11 +1,11 @@
 // const express = require('express');
 import express from 'express';
-import { login, register, current } from '../controllers/login.js'
+import { login, register, current } from '../controllers/users.js'
 import auth from '../middleware/auth.js'
 
 const router = express.Router();
 
-// /api/user/login
+// /api/user/users
 router.post('/login', login);
 
 // /api/user/register
