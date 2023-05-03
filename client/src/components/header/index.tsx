@@ -1,6 +1,6 @@
 import { Link }   from "react-router-dom";
 import { Layout, Space, Typography } from "antd"
-import { TeamOutlined } from "@ant-design/icons"
+import { TeamOutlined, UserOutlined, LoginOutlined } from "@ant-design/icons"
 import { Paths }  from "../../paths";
 import styles from "./index.module.css"
 
@@ -21,12 +21,18 @@ export const Header = () => {
       </Space>
       <Space>
         <Link to={ Paths.register }>
-          <Button type="ghost">
+          <Button
+            type="ghost"
+            icon={<UserOutlined />}
+          >
             Register
           </Button>
         </Link>
         <Link to={ Paths.login }>
-          <Button type="ghost">
+          <Button
+            type="ghost"
+            icon={<LoginOutlined />}
+          >
             Login
           </Button>
         </Link>
