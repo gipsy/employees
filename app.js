@@ -1,6 +1,7 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
+import cors from 'cors';
 
 import userRoutes from './routes/users.js'
 import employeeRoutes from './routes/employees.js'
@@ -11,6 +12,7 @@ dotenv.config();
 const app = express();
 
 app.use(logger('dev'));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
