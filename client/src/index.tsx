@@ -8,13 +8,18 @@ import { Paths } from './paths';
 import './index.css';
 import { ConfigProvider, theme }  from "antd";
 
-import { Login, Register, Employees } from './pages'
+import {
+  Login, Register, Employees,
+  AddEmployee, Status
+} from './pages';
 import { Auth } from "./features/auth/auth";
 
 const router = createBrowserRouter([
   { path: Paths.home, element: <Employees /> },
   { path: Paths.login, element: <Login /> },
-  { path: Paths.register, element: <Register /> }
+  { path: Paths.register, element: <Register /> },
+  { path: Paths.employeeAdd, element: <AddEmployee /> },
+  { path: `${Paths.status}/:status`, element: <Status /> }
 ])
 
 const container = document.getElementById('root')!;

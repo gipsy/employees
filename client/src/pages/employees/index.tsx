@@ -42,11 +42,13 @@ export const Employees = () => {
     }
   }, [navigate, user]);
   
+  const gotToAddUser = () => navigate(Paths.employeeAdd);
+  
   return (
     <Layout>
       <Button
         type="primary"
-        onClick={ () => null }
+        onClick={ gotToAddUser }
         icon={ <PlusCircleOutlined/> }
       >
         Add

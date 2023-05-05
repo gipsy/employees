@@ -2,3 +2,5 @@
 export * from './login'
 export * from './register'
 export * from './employees'
+export * from './add-employee'
+export * from './status'

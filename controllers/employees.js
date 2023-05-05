@@ -29,6 +29,8 @@ export const add = async (req, res) => {
       res.status(400).json({ message: 'All fields must be provided'});
     }
 
+    console.log('check add endpoint')
+    console.log(firstName, lastName, address, age);
     const employee = await prismadb.employee.create({
       data: {
         firstName,
