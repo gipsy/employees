@@ -8,11 +8,11 @@ import { Paths } from './paths';
 import './index.css';
 import { ConfigProvider, theme }  from "antd";
 
-import { Login, Register } from './pages'
+import { Login, Register, Employees } from './pages'
 import { Auth } from "./features/auth/auth";
 
 const router = createBrowserRouter([
-  { path: Paths.home, element: <h1>Employees</h1> },
+  { path: Paths.home, element: <Employees /> },
   { path: Paths.login, element: <Login /> },
   { path: Paths.register, element: <Register /> }
 ])
