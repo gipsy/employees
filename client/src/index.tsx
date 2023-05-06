@@ -10,16 +10,17 @@ import { ConfigProvider, theme }  from "antd";
 
 import {
   Login, Register, Employees,
-  AddEmployee, Status
-} from './pages';
-import { Auth } from "./features/auth/auth";
+  AddEmployee, Status, Employee,
+}                   from './pages';
+import { Auth }     from "./features/auth/auth";
 
 const router = createBrowserRouter([
   { path: Paths.home, element: <Employees /> },
   { path: Paths.login, element: <Login /> },
   { path: Paths.register, element: <Register /> },
   { path: Paths.employeeAdd, element: <AddEmployee /> },
-  { path: `${Paths.status}/:status`, element: <Status /> }
+  { path: `${Paths.status}/:status`, element: <Status /> },
+  { path: `${Paths.employee}/:id`, element: <Employee /> }
 ])
 
 const container = document.getElementById('root')!;

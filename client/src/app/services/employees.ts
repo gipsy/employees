@@ -9,7 +9,7 @@ export const employeesApi = api.injectEndpoints({
         method: 'GET'
       } )
     } ),
-    getEmployee: builder.query<Employee, void>( {
+    getEmployee: builder.query<Employee, string>( {
       query: (id) => ( {
         url: `/employees/${ id }`,
         method: 'GET'

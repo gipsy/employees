@@ -1,5 +1,5 @@
-import { Link }                               from "react-router-dom";
-import { Paths }                              from "../../paths";
+import { Link, useNavigate } from "react-router-dom";
+import { Paths }             from "../../paths";
 import { useRegisterMutation, UserData }      from "../../app/services/auth";
 import { useState }                           from "react";
 import { isErrorWithMessage }                 from "../../utils/is-error-with-message";
@@ -13,10 +13,12 @@ import { ErrorMessage }                       from "../../components/error-messa
 export const Register = () => {
   const [registerUser, registerUserResult] = useRegisterMutation();
   const [error, setError] = useState('');
+  const navigate = useNavigate();
   
   const register = async (data: UserData) => {
     try {
       await registerUser(data).unwrap();
+      navigate('/');
     } catch (err) {
       const maybeError = isErrorWithMessage(err);
       
