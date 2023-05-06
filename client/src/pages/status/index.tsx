@@ -16,7 +16,7 @@ export const Status = () => {
     <Row
       align="middle"
       justify="center"
-      style={ { width: '100%' } }
+      style={ { 'width': '100%' } }
     >
       <Result
         status={ status ? 'success' : 404 }

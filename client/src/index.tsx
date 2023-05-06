@@ -11,6 +11,7 @@ import { ConfigProvider, theme }  from "antd";
 import {
   Login, Register, Employees,
   AddEmployee, Status, Employee,
+  EditEmployee,
 }                   from './pages';
 import { Auth }     from "./features/auth/auth";
 
@@ -19,8 +20,9 @@ const router = createBrowserRouter([
   { path: Paths.login, element: <Login /> },
   { path: Paths.register, element: <Register /> },
   { path: Paths.employeeAdd, element: <AddEmployee /> },
+  { path: `${Paths.employeeEdit}/:id`, element: <EditEmployee /> },
+  { path: `${Paths.employee}/:id`, element: <Employee /> },
   { path: `${Paths.status}/:status`, element: <Status /> },
-  { path: `${Paths.employee}/:id`, element: <Employee /> }
 ])
 
 const container = document.getElementById('root')!;

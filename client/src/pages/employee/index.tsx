@@ -1,16 +1,18 @@
-import { Link, Navigate, useNavigation, useParams }       from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams }         from "react-router-dom";
 import { useState }                                       from "react";
 import { useGetEmployeeQuery, useRemoveEmployeeMutation } from "../../app/services/employees";
 import { selectUser }                                     from "../../features/auth/authSlice";
-import { useSelector }                         from "react-redux";
-import { Descriptions, Divider, Modal, Space } from "antd";
-import { Layout }                              from "../../components/layout";
+import { useSelector }                                    from "react-redux";
+import { Descriptions, Divider, Modal, Space }            from "antd";
+import { Layout }                                         from "../../components/layout";
 import { DeleteOutlined, EditOutlined }                   from "@ant-design/icons";
 import { Button }                                         from "../../components/button";
 import { ErrorMessage }                                   from "../../components/error-message";
+import { Paths }                                          from "../../paths";
+import { isErrorWithMessage }                             from "../../utils/is-error-with-message";
 
 export const Employee = () => {
-  const navigate = useNavigation();
+  const navigate = useNavigate();
   const [ error, setError ] = useState( '' );
   const params = useParams();
   const [ isModalOpen, setIsModalOpen ] = useState( false );
@@ -28,6 +30,27 @@ export const Employee = () => {
   
   const showModal = () => {
     setIsModalOpen(true);
+  }
+  
+  const hideModal = () => {
+    setIsModalOpen(false);
+  }
+  
+  const handleDeleteUser = async () => {
+    hideModal();
+    try {
+      await removeEmployee(data.id).unwrap();
+      
+      navigate(`${Paths.status}/deleted`);
+    } catch (error) {
+      const maybeError = isErrorWithMessage(error);
+      
+      if (maybeError) {
+        setError(error.data.message);
+      } else {
+        setError('Unexpected error');
+      }
+    }
   }
   
   return (
@@ -52,7 +75,7 @@ export const Employee = () => {
                 type="default"
                 shape="round"
                 icon={ <EditOutlined/> }
-                onClick={() => null}
+                onClick={ () => null }
               >
                 Edit
               </Button>
@@ -60,7 +83,7 @@ export const Employee = () => {
             <Button
               type="default"
               shape="round"
-              icon={ <DeleteOutlined /> }
+              icon={ <DeleteOutlined/> }
               danger
               onClick={ showModal }
             >
@@ -69,12 +92,12 @@ export const Employee = () => {
           </Space>
         </>
       ) }
-      <ErrorMessage message={ error } />
+      <ErrorMessage message={ error }/>
       <Modal
         title="Confirm deletion"
         open={ isModalOpen }
-        onOk={() => null}
-        onCancel={() => null}
+        onOk={ handleDeleteUser }
+        onCancel={ hideModal }
         okText="Confirm"
         cancelText="Decline"
       >

@@ -25,7 +25,7 @@ export const Register = () => {
       if (maybeError) {
         setError(err.data.message);
       } else {
-        setError("Not known error");
+        setError( "Unexpected error" );
       }
     }
   }
