@@ -6,8 +6,10 @@
   "scripts": {
     "start": "node bin/www.js",
     "server": "nodemon bin/www.js",
-    "client": "npm start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "client": "npm run dev --prefix client",
+    "build": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "install": "concurrently \"npm install\" \"npm install --prefix client\""
   },
   "dependencies": {
     "@prisma/client": "^4.13.0",

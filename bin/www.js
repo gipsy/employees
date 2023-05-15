@@ -4,12 +4,9 @@
  * Module dependencies.
  */
 
-// var app = require('../app');
 import app from '../app.js';
-// var debug = require('debug')('employees:server');
 import debug from 'debug';
 debug.debug('employees:server');
-// var http = require('http');
 import http from 'http';
 
 /**
