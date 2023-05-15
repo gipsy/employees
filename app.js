@@ -24,5 +24,4 @@ app.get('/', (res, req) => {
   req.send('APP IS RUNNING.');
 })
 
-// module.exports = app;
 export default app;

@@ -36,6 +36,7 @@ export const login = async ( req, res) => {
       return res.status(400).json({ message: "Incorrect users or password." });
     }
   } catch (error) {
+    console.log(error)
     res.status(500).json({ message: "Something went wrong."});
   }
 };
@@ -87,6 +88,7 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: "Create user not success." });
     }
   } catch (error) {
+    console.log(error)
     res.status(500).json({ message: "Something went wrong." });
   }
 };
