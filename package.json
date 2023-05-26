@@ -8,8 +8,7 @@
     "server": "nodemon bin/www.js",
     "client": "npm run dev --prefix client",
     "build": "npm start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "install": "npm install"
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "dependencies": {
     "@prisma/client": "^4.13.0",
