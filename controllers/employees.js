@@ -22,6 +22,7 @@ export const all = async (req, res) => {
  * @access Private
  */
 export const add = async (req, res) => {
+  console.log('add')
   try {
     const { firstName, lastName, address, age } = req.body;
 
@@ -38,8 +39,10 @@ export const add = async (req, res) => {
         userId: req.user.id,
       }
     });
+    console.log('employee.create',employee)
     return res.status(201).json(employee);
   } catch (error) {
+    console.log(error)
     return res.status(500).json({ message: "Something went wrong." });
   }
 }

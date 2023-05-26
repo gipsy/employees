@@ -74,6 +74,7 @@ export const register = async (req, res) => {
         password: hashedPassword,
       }
     })
+    console.log(user)
 
     const secret = process.env.JWT_SECRET_KEY
 
