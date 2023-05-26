@@ -47,6 +47,7 @@ export const login = async ( req, res) => {
  * @access Public
  */
 export const register = async (req, res) => {
+  console.log(prismadb.user)
   try {
     const { email, password, name } = req.body;
 
