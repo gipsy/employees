@@ -7,12 +7,14 @@ import prismadb from "../lib/prismadb.js";
  * @desc Login
  * @access Public
  */
-export const login = async ( req, res) => {
+export const login = async ( req, res, next) => {
   try {
+    console.log(req.cookies)
+    console.log(req.body)
     const { email, password } = req.body;
 
     if (!email || !password) {
-      res.status(400).json({ message: "Please fill in required fields" });
+      return res.status(400).json({ message: "Please fill in required fields" });
     }
 
     const user = await prismadb.user.findFirst({
@@ -23,17 +25,49 @@ export const login = async ( req, res) => {
 
     const isPasswordCorrect = user && (await bcrypt.compare(password, user?.password));
 
-    const secret = process.env.JWT_SECRET_KEY
+    const accessSecret = process.env.ACCESS_SECRET_KEY
+    const refreshSecret = process.env.REFRESH_SECRET_KEY
 
-    if (user && isPasswordCorrect && secret) {
+    const accessToken = jwt.sign({ id: user.id }, accessSecret,
+      { expiresIn: "2m" }
+    )
+    if (user && isPasswordCorrect && accessSecret && refreshSecret) {
+      console.log(req.headers.origin)
+      res.set(
+        {
+          'Access-Control-Allow-Credentials': true,
+          'Access-Control-Allow-Origin': req.headers.origin,
+          'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+          'Access-Control-Allow-Methods': 'GET,HEAD,OPTIONS,POST,PUT',
+          // 'Access-Control-Expose-Headers': 'Content-Type',
+        }
+      ).cookie( 'access_token', accessToken, {
+        httpOnly: true,
+        path: '/',
+        maxAge: 120000,
+        domain: 'localhost',
+        sameSite: 'none',
+        secure: true
+      } )
+      // .status( 200 ).json( {
+      //   // id: user.id,
+      //   email: user.email,
+      //   name: user.name,
+      // } )
+      // intercept OPTIONS method
       res.status(200).json({
         id: user.id,
         email: user.email,
         name: user.name,
-        token: jwt.sign({ id: user.id }, secret, { expiresIn: "30d" }),
+        // accessToken: jwt.sign({ id: user.id }, accessSecret,
+        //   { expiresIn: "2m" }
+        // ),
+        // refreshToken: jwt.sign({ id: user.id }, refreshSecret,
+        //   { expiresIn: "10m",
+        // })
       })
     } else {
-      return res.status(400).json({ message: "Incorrect users or password." });
+      res.status(400).json({ message: "Incorrect users or password." });
     }
   } catch (error) {
     console.log(error)
@@ -74,16 +108,16 @@ export const register = async (req, res) => {
         password: hashedPassword,
       }
     })
-    console.log(user)
 
-    const secret = process.env.JWT_SECRET_KEY
+    const accessSecret = process.env.ACCESS_SECRET_KEY
 
-    if (user && secret) {
+    if (user && accessSecret) {
       res.status(201).json({
         id: user.id,
         email: user.email,
         name: user.name,
-        token: jwt.sign({ id: user.id }, secret, { expiresIn: '30d' })
+        accessToken: jwt.sign({ id: user.id }, accessSecret, { expiresIn: '2m' }),
+        refreshToken: jwt.sign({ id: user.id }, refreshSecret, { expiresIn: '10m' })
       })
     } else {
       return res.status(400).json({ message: "Create user not success." });
@@ -104,3 +138,14 @@ export const register = async (req, res) => {
 export const current = async (req, res) => {
   return res.status(200).json(req.user);
 };
+
+/**
+ *
+ * @route GET /api/user/logout
+ * @desc Logout user
+ * @access Private
+ */
+export const logout = async(req, res) => {
+  res.clearCookie('access_token');
+  res.status(200).json('Logout success');
+}

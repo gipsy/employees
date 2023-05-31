@@ -11,6 +11,7 @@ export const all = async (req, res) => {
 
     res.status(200).json(employees)
   } catch (error) {
+    console.log(error)
     res.status(400).json({ message: 'Cannot get all employees' });
 
   }
@@ -22,10 +23,10 @@ export const all = async (req, res) => {
  * @access Private
  */
 export const add = async (req, res) => {
-  console.log('add')
   try {
     const { firstName, lastName, address, age } = req.body;
 
+    console.log('body',req.body)
     if (!firstName || !lastName || !address || !age) {
       res.status(400).json({ message: 'All fields must be provided'});
     }
@@ -39,10 +40,9 @@ export const add = async (req, res) => {
         userId: req.user.id,
       }
     });
-    console.log('employee.create',employee)
     return res.status(201).json(employee);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(500).json({ message: "Something went wrong." });
   }
 }
@@ -64,6 +64,7 @@ export const remove = async (req, res) => {
 
     res.status(204).json('OK')
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: "Not able to remove employee" });
   }
 }
