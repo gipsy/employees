@@ -11,33 +11,25 @@ dotenv.config();
 
 const app = express();
 
-app.use(logger('dev'));
-app.options('*', (req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin','http://localhost:5173');
-  res.setHeader('Access-Control-Allow-Credentials',true);
-  res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, X-PINGOTHER,Content-Type, Accept");
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  next()
-});
+// app.options('*',function (req, res, next) {
+//   const allowedDomains = ['http://localhost:5173','https://employees-vbhk.onrender.com' ];
+//   const origin = req.headers.origin;
+//   if(allowedDomains.indexOf(origin) > -1){
+//     res.setHeader('Access-Control-Allow-Origin', origin);
+//   }
+//
+//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+//   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Accept');
+//   res.setHeader('Access-Control-Allow-Credentials', true);
+//
+//   next();
+// })
 
+app.use(logger('dev'));
 app.use(cors({
   origin : true,
   credentials: true,
 }));
-
-app.options('*',function (req, res, next) {
-  var allowedDomains = ['http://localhost:5173','https://employees-vbhk.onrender.com' ];
-  var origin = req.headers.origin;
-  if(allowedDomains.indexOf(origin) > -1){
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
-
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Accept');
-  res.setHeader('Access-Control-Allow-Credentials', true);
-
-  next();
-})
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

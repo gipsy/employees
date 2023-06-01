@@ -4,7 +4,7 @@ import prismadb from '../lib/prismadb.js'
 const auth = async (req, res, next) => {
   try {
     // const token = req.headers.authorization?.split(' ')[1];
-    const token = req.cookies.access_token
+    const token = await req.cookies.access_token
     console.log('access_token',token)
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
