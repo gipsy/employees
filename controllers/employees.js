@@ -26,7 +26,6 @@ export const add = async (req, res) => {
   try {
     const { firstName, lastName, address, age } = req.body;
 
-    console.log('body',req.body)
     if (!firstName || !lastName || !address || !age) {
       res.status(400).json({ message: 'All fields must be provided'});
     }
@@ -66,6 +65,29 @@ export const remove = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Not able to remove employee" });
+  }
+}
+
+/**
+ * @route PATCH /api/employees/update
+ * @desc Edit employees collection
+ * @access Private
+ */
+export const update = async (req, res) => {
+  try {
+    const employeeQueries = req.body;
+
+    for (const id in employeeQueries) {
+      await prismadb.employee.update({
+        where: { id },
+        data: employeeQueries[id]
+      })
+    }
+
+    res.status(204).json('OK')
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Not able to edit employees" })
   }
 }
 

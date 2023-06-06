@@ -5,6 +5,7 @@ import cors from 'cors';
 
 import userRoutes from './routes/users.js'
 import employeeRoutes from './routes/employees.js'
+import refreshRoutes from './routes/refresh.js'
 
 import dotenv from 'dotenv'
 dotenv.config();
@@ -37,6 +38,7 @@ app.use(cookieParser());
 
 app.use('/api/user', userRoutes);
 app.use('/api/employees', employeeRoutes);
+app.use('/api/refresh', refreshRoutes);
 
 app.get('/', (res, req) => {
   req.send('APP IS RUNNING.');

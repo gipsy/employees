@@ -4,7 +4,7 @@ import { authApi } from "../../app/services/auth";
 import { RootState } from "../../app/store";
 
 interface InitialState {
-  user: User & { token: string } | null,
+  user: User & { accessToken: string } | null,
   isAuthenticated: boolean,
 }
 
@@ -29,7 +29,11 @@ const slice = createSlice({
         state.user = action.payload;
         state.isAuthenticated = true;
       })
-      .addMatcher(authApi.endpoints.current.matchFulfilled, (state, action) => {
+      //.addMatcher(authApi.endpoints.current.matchFulfilled, (state, action) => {
+      //  state.user = action.payload;
+      //  state.isAuthenticated = true;
+      //})
+      .addMatcher(authApi.endpoints.refresh.matchFulfilled, (state, action) => {
         state.user = action.payload;
         state.isAuthenticated = true;
       })

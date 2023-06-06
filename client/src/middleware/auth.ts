@@ -7,9 +7,10 @@ listenerMiddleware.startListening({
   matcher: authApi.endpoints.login.matchFulfilled,
   effect: async (action, listenerApi) => {
     listenerApi.cancelActiveListeners();
-    
-    if (action.payload.token) {
-      localStorage.setItem('token', action.payload.token);
-    }
+  
+    //console.log('middleware/auth',action.payload)
+    //if (action.payload.accessToken) {
+    //  localStorage.setItem('token', action.payload.token);
+    //}
   }
 })

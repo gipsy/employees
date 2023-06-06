@@ -6,7 +6,7 @@ export const employeesApi = api.injectEndpoints({
     getAllEmployees: builder.query<Employee[], void>( {
       query: () => ( {
         url: '/employees',
-        method: 'GET'
+        method: 'GET',
       } )
     } ),
     getEmployee: builder.query<Employee, string>( {

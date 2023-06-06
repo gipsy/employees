@@ -17,9 +17,7 @@ export const Login = () => {
   
   const login = async (data: UserData) => {
     try {
-      console.log('userData', data);
       await loginUser(data).unwrap();
-      console.log('loginUserResult', loginUserResult)
       navigate('/');
     } catch (err) {
       const maybeError = isErrorWithMessage(err);

@@ -2,7 +2,7 @@ import { User } from "@prisma/client";
 import { api } from "./api";
 
 export type UserData = Omit<User, "id">;
-type ResponseLoginData = User & { token: string };
+type ResponseLoginData = User & { accessToken: string };
 
 export const authApi = api.injectEndpoints( {
   endpoints: (builder) => ( {
@@ -20,15 +20,22 @@ export const authApi = api.injectEndpoints( {
         body: userData
       } )
     } ),
-    current: builder.query<ResponseLoginData, void>( {
+    //current: builder.query<ResponseLoginData, void>( {
+    //  query: () => ( {
+    //    url: 'user/current',
+    //    method: 'GET',
+    //  } ),
+    //} ),
+    refresh: builder.query<ResponseLoginData, void>({
       query: () => ( {
-        url: 'user/current',
+        url: 'refresh',
         method: 'GET',
-      } ),
-    } ),
+        credentials: 'include'
+      } )
+    })
   } )
 } );
 
-export const { useLoginMutation, useRegisterMutation, useCurrentQuery } = authApi;
+export const { useLoginMutation, useRegisterMutation, useRefreshQuery } = authApi;
 
-export const { endpoints: { login, register, current } } = authApi;
+export const { endpoints: { login, register, refresh } } = authApi;
