@@ -1,3 +1,15 @@
+# Environment and secrets
 .env
+.env.*
+!.env.example
+*.env
+.envrc
+.env.render-backup.*
+
+# Dependencies and local data
 /node_modules
 *.db
+
+# IDE
+.idea/
+*.iml

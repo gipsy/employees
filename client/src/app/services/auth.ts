@@ -20,12 +20,6 @@ export const authApi = api.injectEndpoints( {
         body: userData
       } )
     } ),
-    //current: builder.query<ResponseLoginData, void>( {
-    //  query: () => ( {
-    //    url: 'user/current',
-    //    method: 'GET',
-    //  } ),
-    //} ),
     refresh: builder.query<ResponseLoginData, void>({
       query: () => ( {
         url: 'refresh',

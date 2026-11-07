@@ -2,6 +2,17 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import prismadb from "../lib/prismadb.js";
 
+const cookieOptions = {
+  httpOnly: true,
+  secure: true,
+  sameSite: 'None',
+};
+
+function publicUser(user) {
+  const { password, refreshToken, ...safe } = user;
+  return safe;
+}
+
 /**
  * @route POST /api/user/login
  * @desc Login
@@ -10,7 +21,6 @@ import prismadb from "../lib/prismadb.js";
 export const login = async ( req, res ) => {
   try {
     const cookies = req.cookies;
-    console.log(`cookies available at login: ${JSON.stringify(cookies)}`);
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -23,7 +33,6 @@ export const login = async ( req, res ) => {
       }
     })
 
-    // evaluate password
     const isPasswordCorrect = user && (await bcrypt.compare(password, user?.password));
 
     const accessSecret = process.env.ACCESS_SECRET_KEY
@@ -37,16 +46,11 @@ export const login = async ( req, res ) => {
         { expiresIn: "1d" }
       )
 
-      // Changed to let keyword
       let newRefreshTokenArray = !cookies?.jwt
         ? user.refreshToken
         : user.refreshToken.filter(rt => rt !== cookies.jwt);
 
       if (cookies?.jwt) {
-        // Scenario added here:
-        //   1) User logs in but never uses RT and does not logout
-        //   2) RT is stolen
-        //   3) If 1 & 2, reuse detection is needed to clear all RTs when user logs in
         const refreshToken = cookies.jwt;
         const foundToken = await prismadb.user.findFirst({
           where: {
@@ -56,43 +60,32 @@ export const login = async ( req, res ) => {
           }
         });
 
-        // Detected refresh token reuse!
         if (!foundToken) {
-          console.log('attempted refresh token reuse at login!');
-          // clear out ALL previous refresh tokens
           newRefreshTokenArray = [];
         }
 
-        res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+        res.clearCookie('jwt', cookieOptions);
       }
 
-      // Saving refreshToken with current user
-      user.refreshToken = [...newRefreshTokenArray, newRefreshToken];
-      const result = await prismadb.user.update({
+      await prismadb.user.update({
         data: {
-          refreshToken: user.refreshToken
+          refreshToken: [...newRefreshTokenArray, newRefreshToken],
         },
         where: {
           id: user.id,
         }
       });
-      console.log(result);
 
-      // Creates Secure Cookie with refresh token
       res.cookie('jwt', newRefreshToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'None',
+        ...cookieOptions,
         maxAge: 24 * 60 * 60 * 1000,
       });
 
-      // Send authorization roles and access token to user
       res.json({ accessToken });
     } else {
       res.status(400).json({ message: "Incorrect users or password." });
     }
-  } catch (error) {
-    console.log(error)
+  } catch {
     res.status(500).json({ message: "Something went wrong."});
   }
 };
@@ -107,7 +100,7 @@ export const register = async (req, res) => {
     const { email, password, name } = req.body;
 
     if (!email || !password || !name) {
-      res.status(400).json({ message: "Please fill in required fields" });
+      return res.status(400).json({ message: "Please fill in required fields" });
     }
 
     const registeredUser = await prismadb.user.findFirst({
@@ -131,8 +124,6 @@ export const register = async (req, res) => {
       }
     })
 
-    console.log(user);
-
     const accessSecret = process.env.ACCESS_SECRET_KEY
 
     if (user && accessSecret) {
@@ -140,18 +131,11 @@ export const register = async (req, res) => {
         id: user.id,
         email: user.email,
         name: user.name,
-        // accessToken: jwt.sign({ id: user.id }, accessSecret,
-        //   { expiresIn: "2m" }
-        // ),
-        // refreshToken: jwt.sign({ id: user.id }, refreshSecret,
-        //   { expiresIn: "1d",
-        // })
       })
     } else {
       return res.status(400).json({ message: "Create user not success." });
     }
-  } catch (error) {
-    console.log(error)
+  } catch {
     res.status(500).json({ message: "Something went wrong." });
   }
 };
@@ -164,23 +148,20 @@ export const register = async (req, res) => {
  * @access Private
  */
 export const current = async (req, res) => {
-  return res.status(200).json(req.user);
+  return res.status(200).json(publicUser(req.user));
 };
 
 /**
  *
- * @route GET /api/user/logout
+ * @route POST /api/user/logout
  * @desc Logout user
- * @access Private
+ * @access Public (session ended via refresh cookie)
  */
 export const logout = async (req, res) => {
-  // On client, also delete the accessToken
-
   const cookies = req.cookies;
-  if (!cookies?.jwt) return res.sendStatus(204); //No content
+  if (!cookies?.jwt) return res.sendStatus(204);
   const refreshToken = cookies.jwt;
 
-  // Is refreshToken in db?
   const foundUser = await prismadb.user.findFirst({
     where: {
       refreshToken: {
@@ -189,25 +170,20 @@ export const logout = async (req, res) => {
     }
   });
   if (!foundUser) {
-    res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+    res.clearCookie('jwt', cookieOptions);
     return res.sendStatus(204);
   }
 
-  // Delete refreshToken in db
-  foundUser.refreshToken = foundUser.refreshToken.filter(rt => rt !== refreshToken);
-  const result = await prismadb.user.update({
+  const remaining = foundUser.refreshToken.filter(rt => rt !== refreshToken);
+  await prismadb.user.update({
     where: {
       id: foundUser.id,
     },
     data: {
-      email: foundUser.email,
-      name: foundUser.name,
-      password: foundUser.password,
-      refreshToken: foundUser.refreshToken
+      refreshToken: remaining,
     }
   });
-  console.log(result);
 
-  res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+  res.clearCookie('jwt', cookieOptions);
   res.sendStatus(204);
 }
