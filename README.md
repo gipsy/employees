@@ -1,6 +1,6 @@
 # Employees
 
-A small full-stack web app for **managing your own employee directory**: sign in, add people with contact-style fields, browse them in a table, and open a detail view to edit or remove records. Each account sees only its own data.
+A full-stack web app for **managing a personal employee directory**: register, sign in, and maintain contact records (name, age, address) with list, detail, edit, and delete. React + Express + Prisma/MongoDB; JWT auth; each user’s data is isolated.
 
 Live demo:
 
