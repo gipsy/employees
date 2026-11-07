@@ -13,18 +13,11 @@ export const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   
-  const onLoginClick = () => {
-  }
-  
   const onLogoutClick = () => {
     dispatch(logout());
-    localStorage.removeItem('token');
     navigate( '/login' );
   }
-  
-  const onRegisterClick = () => {
-  }
-  
+
   return (
     <Layout.Header className={ styles.header }>
       <Space>
@@ -47,20 +40,12 @@ export const Header = () => {
         ) : (
           <Space>
             <Link to={ Paths.register }>
-              <Button
-                type="ghost"
-                icon={ <UserOutlined/> }
-                onClick={ onRegisterClick }
-              >
+              <Button type="ghost" icon={ <UserOutlined/> }>
                 Register
               </Button>
             </Link>
             <Link to={ Paths.login }>
-              <Button
-                type="ghost"
-                icon={ <LoginOutlined/> }
-                onClick={ onLoginClick }
-              >
+              <Button type="ghost" icon={ <LoginOutlined/> }>
                 Login
               </Button>
             </Link>
